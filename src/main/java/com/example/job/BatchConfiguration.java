@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.service.IDemoService;
+import com.example.service.ICrawlService;
 
 @Configuration
 @EnableBatchProcessing
@@ -27,7 +27,7 @@ public class BatchConfiguration {
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 	@Autowired
-	private IDemoService demoService;
+	private ICrawlService demoService;
 
 	@Bean
 	public Job job1(Step step1) throws Exception {
@@ -38,7 +38,7 @@ public class BatchConfiguration {
 	public Step step1() {
 		return stepBuilderFactory.get("step1").tasklet(new Tasklet() {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-				demoService.log();
+//				demoService.log();
 				return null;
 			}
 		}).build();

@@ -10,7 +10,7 @@
 			<property name="replaceString" value="Criteria"/>
 		</plugin>
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/wp_xvideos" userId="wordpress" password="password" />
-		<javaModelGenerator targetPackage="com.example.model" targetProject="wp-updater">
+		<javaModelGenerator targetPackage="com.example.model.wp" targetProject="wp-updater">
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
 		<sqlMapGenerator targetPackage="sqlmap" targetProject="wp-updater/src/main/resources">
