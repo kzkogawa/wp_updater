@@ -3,6 +3,8 @@ package com.example.util;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.net.URLCodec;
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,16 @@ public class WpUpdaterUtils {
 			log.error("", e);
 		}
 		return neko;
+	}
+
+	public static String urlEncode(String name) {
+		URLCodec codec = new URLCodec("utf-8");
+		try {
+			return codec.encode(name);
+		} catch (EncoderException e) {
+			log.error("", e);
+		}
+		return name;
 	}
 
 }

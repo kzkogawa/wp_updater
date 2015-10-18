@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.service.ICrawlService;
 
-public class DemoServiceTests extends TestBase {
+public class CrawlServiceTests extends TestBase {
 	@Autowired
 	ICrawlService demoService;
 
 	@Test
-	public void findAccount_1() {
+	public void crawl_test() {
 		demoService.doCrawl();
 	}
 

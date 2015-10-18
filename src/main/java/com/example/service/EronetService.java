@@ -14,6 +14,8 @@ import org.w3c.dom.html.HTMLAnchorElement;
 import org.w3c.dom.html.HTMLImageElement;
 
 import com.example.mapper.WpPostmetaMapper;
+import com.example.mapper.WpPostsMapper;
+import com.example.mapper.WpTermsMapper;
 import com.example.model.EronetModel;
 import com.example.util.WpUpdaterUtils;
 
@@ -21,7 +23,11 @@ import com.example.util.WpUpdaterUtils;
 public class EronetService implements ICrawlService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
+	private WpPostsMapper postsMapper;
+	@Autowired
 	private WpPostmetaMapper postmetaMapper;
+	@Autowired
+	private WpTermsMapper termsMapper;
 
 	@Transactional
 	@Override

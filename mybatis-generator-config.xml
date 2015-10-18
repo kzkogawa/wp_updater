@@ -21,8 +21,13 @@
 		<table tableName="wp_postmeta"></table>
 		<table tableName="wp_posts"></table>
 		<table tableName="wp_term_relationships"></table>
-		<table tableName="wp_term_taxonomy"></table>
-		<table tableName="wp_terms"></table>
+			
+		<table tableName="wp_term_taxonomy">
+			<generatedKey column="term_taxonomy_id" sqlStatement="MySql"/>
+		</table>
+		<table tableName="wp_terms">
+			<generatedKey column="term_id" sqlStatement="MySql"/>
+		</table>
 
 	</context>
 </generatorConfiguration>
