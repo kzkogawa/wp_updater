@@ -16,8 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.mapper.WpPostmetaMapper;
-import com.example.model.WpPostmeta;
+import com.example.service.IDemoService;
 
 @Configuration
 @EnableBatchProcessing
@@ -25,11 +24,10 @@ public class BatchConfiguration {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
-
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 	@Autowired
-	private WpPostmetaMapper postmetaMapper;
+	private IDemoService demoService;
 
 	@Bean
 	public Job job1(Step step1) throws Exception {
@@ -40,25 +38,10 @@ public class BatchConfiguration {
 	public Step step1() {
 		return stepBuilderFactory.get("step1").tasklet(new Tasklet() {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-				WpPostmeta postmeta = postmetaMapper.selectByPrimaryKey(new Long(1));
-				log.debug("aaaaaaaaaaaaaaaaaaa");
+				demoService.log();
 				return null;
 			}
 		}).build();
-	}
-	@Bean
-	public Job job2(Step step2) throws Exception {
-		return jobBuilderFactory.get("job2").incrementer(new RunIdIncrementer()).start(step2).build();
 	}
 
-	@Bean
-	public Step step2() {
-		return stepBuilderFactory.get("step2").tasklet(new Tasklet() {
-			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-				WpPostmeta postmeta = postmetaMapper.selectByPrimaryKey(new Long(1));
-				log.debug("bbbbbbbbbbbbbb");
-				return null;
-			}
-		}).build();
-	}
 }

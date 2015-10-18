@@ -3,6 +3,12 @@
 <generatorConfiguration>
 	<classPathEntry location="C:\Users\Kazufumi\.m2\repository\mysql\mysql-connector-java\5.1.35\mysql-connector-java-5.1.35.jar" />
 	<context id="context1">
+		<plugin type="org.mybatis.generator.plugins.ToStringPlugin"></plugin>
+		<plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
+		<plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin" >
+			<property name="searchString" value="Example$"/>
+			<property name="replaceString" value="Criteria"/>
+		</plugin>
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/wp_xvideos" userId="wordpress" password="password" />
 		<javaModelGenerator targetPackage="com.example.model" targetProject="wp-updater">
 			<property name="trimStrings" value="true" />
