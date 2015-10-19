@@ -39,7 +39,7 @@ public class WpPostsWithBLOBFactory {
 
 	public WpPostsWithBLOBFactory setPostTitle(String title) {
 		post.setPostTitle(title);
-		post.setPostName(WpUpdaterUtils.urlEncode(title));
+		post.setPostName(WpUpdaterUtils.urlEncode(StringUtils.substring(title, 0, 22)).toLowerCase());
 		revision.setPostTitle(title);
 		return this;
 	}
@@ -75,6 +75,10 @@ public class WpPostsWithBLOBFactory {
 		revision.setPostParent(post.getId());
 		image.setPostParent(post.getId());
 		post.setGuid(WpUpdaterUtils.getPostGuid(post.getId()));
+		editLast.setPostId(post.getId());
+		editLock.setPostId(post.getId());
+		thmId.setPostId(post.getId());
+		attachedFile.setPostId(post.getId());
 		return this;
 	}
 

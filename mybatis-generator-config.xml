@@ -18,15 +18,19 @@
 		</sqlMapGenerator>
 		<javaClientGenerator targetPackage="com.example.mapper" targetProject="wp-updater" type="XMLMAPPER" />
 
-		<table tableName="wp_postmeta"></table>
-		<table tableName="wp_posts"></table>
+		<table tableName="wp_postmeta">
+			<generatedKey column="meta_id" sqlStatement="MySql" identity="true"/>
+		</table>
+		<table tableName="wp_posts">
+			<generatedKey column="ID" sqlStatement="MySql" identity="true"/>
+		</table>
 		<table tableName="wp_term_relationships"></table>
 			
 		<table tableName="wp_term_taxonomy">
-			<generatedKey column="term_taxonomy_id" sqlStatement="MySql"/>
+			<generatedKey column="term_taxonomy_id" sqlStatement="MySql" identity="true"/>
 		</table>
 		<table tableName="wp_terms">
-			<generatedKey column="term_id" sqlStatement="MySql"/>
+			<generatedKey column="term_id" sqlStatement="MySql" identity="true"/>
 		</table>
 
 	</context>

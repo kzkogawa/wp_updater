@@ -8,6 +8,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Node;
@@ -23,11 +24,13 @@ import com.example.util.WpUpdaterUtils;
 public class EronetService implements ICrawlService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
+	@Autowired
+	PostService postService;
 
 	@Transactional
 	@Override
 	public void doCrawl(final String target) {
-		List<WpPostsWithBLOBFactory> newPosts = new ArrayList<WpPostsWithBLOBFactory>();
+		List<WpPostsWithBLOBFactory> wpPostsWithBLOBFactories = new ArrayList<WpPostsWithBLOBFactory>();
 
 		DOMParser neko = WpUpdaterUtils.getDOMParserInstance(target);
 
@@ -51,9 +54,10 @@ public class EronetService implements ICrawlService {
 						}
 					}
 				}
-				newPosts.add(convertModel(eronetModel));
+				wpPostsWithBLOBFactories.add(convertModel(eronetModel));
 			}
 		}
+		postService.InsertPosts(wpPostsWithBLOBFactories);
 	}
 
 	public WpPostsWithBLOBFactory convertModel(final EronetModel eronetModel) {
@@ -61,7 +65,7 @@ public class EronetService implements ICrawlService {
 		WpPostsWithBLOBFactory postsWithBLOBFactory = new WpPostsWithBLOBFactory();
 		postsWithBLOBFactory.setPostTitle(eronetModel.getImageAlt());
 		postsWithBLOBFactory.setPostContent(WpUpdaterUtils.getContentFromTemplate("eronet.ftl", eronetModel));
-		postsWithBLOBFactory.setImageLink(eronetModel.getImageLink());
+		postsWithBLOBFactory.setImageLink(eronetModel.getImageSrc());
 		return postsWithBLOBFactory;
 	}
 }

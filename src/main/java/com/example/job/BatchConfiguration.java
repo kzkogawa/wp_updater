@@ -27,7 +27,7 @@ public class BatchConfiguration {
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 	@Autowired
-	private ICrawlService demoService;
+	private ICrawlService crawlService;
 
 	@Bean
 	public Job job1(Step step1) throws Exception {
@@ -38,6 +38,7 @@ public class BatchConfiguration {
 	public Step step1() {
 		return stepBuilderFactory.get("step1").tasklet(new Tasklet() {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
+				crawlService.doCrawl("http://xxeronetxx.info/ranking1day.html");
 				return null;
 			}
 		}).build();
