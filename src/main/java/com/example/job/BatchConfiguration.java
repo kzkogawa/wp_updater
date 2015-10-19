@@ -38,7 +38,6 @@ public class BatchConfiguration {
 	public Step step1() {
 		return stepBuilderFactory.get("step1").tasklet(new Tasklet() {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-//				demoService.log();
 				return null;
 			}
 		}).build();

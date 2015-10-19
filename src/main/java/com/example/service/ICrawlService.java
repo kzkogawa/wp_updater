@@ -1,5 +1,5 @@
 package com.example.service;
 
 public interface ICrawlService {
-	void doCrawl();
+	void doCrawl(String target);
 }

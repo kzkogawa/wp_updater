@@ -10,33 +10,33 @@ public class EronetModel {
 		videoUrls = new ArrayList<String>();
 	}
 
-	private String ImageSrc;
-	private String ImageAlt;
-	private String ImageLink;
+	private String imageSrc;
+	private String imageAlt;
+	private String imageLink;
 	private List<String> videoUrls;
 
 	public String getImageSrc() {
-		return ImageSrc;
+		return imageSrc;
 	}
 
 	public void setImageSrc(String imageSrc) {
-		ImageSrc = imageSrc;
+		this.imageSrc = imageSrc;
 	}
 
 	public String getImageAlt() {
-		return ImageAlt;
+		return imageAlt;
 	}
 
 	public void setImageAlt(String imageAlt) {
-		ImageAlt = imageAlt;
+		this.imageAlt = imageAlt;
 	}
 
 	public String getImageLink() {
-		return ImageLink;
+		return imageLink;
 	}
 
 	public void setImageLink(String imageLink) {
-		ImageLink = imageLink;
+		this.imageLink = imageLink;
 	}
 
 	public List<String> getVideoUrls() {

@@ -1,9 +1,10 @@
-package com.example;
+package com.example.service;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.example.TestBase;
 import com.example.model.wp.WpTermRelationships;
 import com.example.service.TagService;
 

@@ -1,11 +1,13 @@
 package com.example.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Node;
@@ -13,26 +15,23 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.html.HTMLAnchorElement;
 import org.w3c.dom.html.HTMLImageElement;
 
-import com.example.mapper.WpPostmetaMapper;
-import com.example.mapper.WpPostsMapper;
-import com.example.mapper.WpTermsMapper;
+import com.example.factory.WpPostsWithBLOBFactory;
 import com.example.model.EronetModel;
 import com.example.util.WpUpdaterUtils;
 
 @Component
 public class EronetService implements ICrawlService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	@Autowired
-	private WpPostsMapper postsMapper;
-	@Autowired
-	private WpPostmetaMapper postmetaMapper;
-	@Autowired
-	private WpTermsMapper termsMapper;
+
 
 	@Transactional
 	@Override
-	public void doCrawl() {
-		DOMParser neko = WpUpdaterUtils.getDOMParserInstance("http://xxeronetxx.info/ranking1day.html");
+	public void doCrawl(final String target) {
+		List<WpPostsWithBLOBFactory> newPosts = new ArrayList<WpPostsWithBLOBFactory>();
+
+		DOMParser neko = WpUpdaterUtils.getDOMParserInstance(target);
+
+		// parse html
 		NodeList imgs = neko.getDocument().getElementById("leftcolumn").getElementsByTagName("IMG");
 		for (int i = 0, n = imgs.getLength(); i < n; i++) {
 			HTMLImageElement gif = (HTMLImageElement) imgs.item(i);
@@ -52,13 +51,17 @@ public class EronetService implements ICrawlService {
 						}
 					}
 				}
-				insertRecode(eronetModel);
+				newPosts.add(convertModel(eronetModel));
 			}
 		}
 	}
 
-	private void insertRecode(final EronetModel eronetModel) {
+	public WpPostsWithBLOBFactory convertModel(final EronetModel eronetModel) {
 		log.debug("", eronetModel);
-
+		WpPostsWithBLOBFactory postsWithBLOBFactory = new WpPostsWithBLOBFactory();
+		postsWithBLOBFactory.setPostTitle(eronetModel.getImageAlt());
+		postsWithBLOBFactory.setPostContent(WpUpdaterUtils.getContentFromTemplate("eronet.ftl", eronetModel));
+		postsWithBLOBFactory.setImageLink(eronetModel.getImageLink());
+		return postsWithBLOBFactory;
 	}
 }

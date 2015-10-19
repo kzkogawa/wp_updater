@@ -29,35 +29,51 @@ public class TagService {
 	@Autowired
 	private WpTermTaxonomyMapper taxonomyMapper;
 
-	public WpTermRelationships getWpTermRelationships(String name) {
-		WpTermRelationships ret = new WpTermRelationships();
-		ret.setTermOrder(0);
-		
-		// search tag
+	/**
+	 * Obtain List<WpTermTaxonomy> by tagName.
+	 * <p>
+	 * When no WpTermTaxonomy found, this returns empty List
+	 * </p>
+	 * 
+	 * @param name
+	 *            of tag
+	 * @return
+	 */
+	public List<WpTermTaxonomy> selectByTagName(String name) {
+		log.debug(name);
 		WpTermsCriteria termsCriteria = new WpTermsCriteria();
 		termsCriteria.createCriteria().andNameEqualTo(name);
 		List<Long> termIds = termsMapper.selectByExample(termsCriteria).stream().map(s -> s.getTermId()).collect(Collectors.toList());
 
 		WpTermTaxonomyCriteria taxonomyCriteria = new WpTermTaxonomyCriteria();
-		taxonomyCriteria.createCriteria().andTaxonomyEqualTo("post_tag").andTermIdIn(termIds);
-		List<WpTermTaxonomy> taxonomies = termIds.isEmpty() ? new ArrayList<WpTermTaxonomy>() : taxonomyMapper.selectByExample(taxonomyCriteria);
-		log.debug("", taxonomies);
+		taxonomyCriteria.createCriteria().andTaxonomyEqualTo(WpUpdaterUtils.CONST_TAXONOMY_POST_TAG).andTermIdIn(termIds);
+		return termIds.isEmpty() ? new ArrayList<WpTermTaxonomy>() : taxonomyMapper.selectByExample(taxonomyCriteria);
+	}
+
+	/**
+	 * 
+	 * @param name
+	 *            of tag
+	 * @return
+	 */
+	public WpTermRelationships getWpTermRelationships(String name) {
+		WpTermRelationships ret = new WpTermRelationships();
+		ret.setTermOrder(0);
+
+		List<WpTermTaxonomy> taxonomies = selectByTagName(name);
 		if (taxonomies.isEmpty()) {
 			// create new tag
 			WpTerms newTerm = new WpTerms();
 			newTerm.setName(name);
 			newTerm.setSlug(WpUpdaterUtils.urlEncode(name));
-			newTerm.setTermGroup(Long.valueOf(0));
 			termsMapper.insert(newTerm);
+			log.debug(String.format("newTerm=%s", newTerm));
 
 			WpTermTaxonomy taxonomy = new WpTermTaxonomy();
 			taxonomy.setTermId(newTerm.getTermId());
-			taxonomy.setTaxonomy("post_tag");
-			taxonomy.setDescription("");
-			taxonomy.setParent(Long.valueOf(0));
-			taxonomy.setCount(Long.valueOf(0));
+			taxonomy.setTaxonomy(WpUpdaterUtils.CONST_TAXONOMY_POST_TAG);
 			taxonomyMapper.insert(taxonomy);
-
+			log.debug(String.format("taxonomy=%s", taxonomy));
 			ret.setTermTaxonomyId(taxonomy.getTermTaxonomyId());
 		} else {
 			// taxonomies.size() should be 1
