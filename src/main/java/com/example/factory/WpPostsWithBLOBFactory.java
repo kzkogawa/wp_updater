@@ -81,7 +81,6 @@ public class WpPostsWithBLOBFactory {
 		editLast.setPostId(post.getId());
 		editLock.setPostId(post.getId());
 		thmId.setPostId(post.getId());
-		attachedFile.setPostId(post.getId());
 		return this;
 	}
 
@@ -124,6 +123,7 @@ public class WpPostsWithBLOBFactory {
 
 	public WpPostsWithBLOBFactory prepareImageUpdate() {
 		thmId.setMetaValue(String.valueOf(image.getId()));
+		attachedFile.setPostId(image.getId());
 		return this;
 	}
 
