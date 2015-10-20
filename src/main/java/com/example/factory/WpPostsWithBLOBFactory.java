@@ -1,15 +1,21 @@
 package com.example.factory;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.example.model.wp.WpPostmeta;
 import com.example.model.wp.WpPostsWithBLOBs;
 import com.example.util.WpUpdaterUtils;
 
 public class WpPostsWithBLOBFactory {
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private WpPostsWithBLOBs post = new WpPostsWithBLOBs();
 	private WpPostsWithBLOBs revision = new WpPostsWithBLOBs();
 	private WpPostsWithBLOBs image = new WpPostsWithBLOBs();
@@ -17,6 +23,7 @@ public class WpPostsWithBLOBFactory {
 	private WpPostmeta editLock = new WpPostmeta();
 	private WpPostmeta thmId = new WpPostmeta();
 	private WpPostmeta attachedFile = new WpPostmeta();
+	private String url;
 
 	// private WpPostmeta jetpack = new WpPostmeta();
 	// private WpPostmeta fileMeta = new WpPostmeta();
@@ -52,11 +59,7 @@ public class WpPostsWithBLOBFactory {
 	}
 
 	public WpPostsWithBLOBFactory setImageLink(String url) {
-		image.setPostTitle(url);
-		image.setPostName(url.toLowerCase());
-		image.setPostMimeType("image/" + StringUtils.substringAfterLast(url, ".").toLowerCase());
-		image.setGuid(url);
-		attachedFile.setMetaValue(url);
+		this.url = url;
 		return this;
 	}
 
@@ -101,6 +104,21 @@ public class WpPostsWithBLOBFactory {
 	}
 
 	public WpPostsWithBLOBs getImageForInsert() {
+		if (StringUtils.isNotEmpty(url)) {
+			String extension = FilenameUtils.getExtension(url);
+			String fileName = String.valueOf(WpUpdaterUtils.getCurrentUtcTime().getTime());
+			String fileNameEx = String.format("%s.%s", fileName, extension);
+			image.setPostTitle(fileName);
+			image.setPostName(fileName);
+			image.setPostMimeType("image/" + extension);
+			image.setGuid(WpUpdaterUtils.getAttachGuid(fileNameEx));
+			attachedFile.setMetaValue(WpUpdaterUtils.getAttacheMetaValue(fileNameEx));
+			try {
+				FileUtils.copyURLToFile(new URL(url), WpUpdaterUtils.getUploadFile(fileNameEx));
+			} catch (Exception e) {
+				log.error("", e);
+			}
+		}
 		return image;
 	}
 

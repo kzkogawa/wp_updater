@@ -1,5 +1,6 @@
 package com.example.util;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
@@ -24,7 +25,10 @@ public class WpUpdaterUtils {
 	private WpUpdaterUtils() {
 	}
 
-	public static final String CONST_BASE_URL = "http://www.x-videos.space";
+	public static final String CONST_BASE_URL = "http://www.x-videos.space/";
+	public static final String CONST_IMAGE_URL = CONST_BASE_URL + "wp-content/uploads/";
+	public static final String CONST_IMAGE_STORE_DIR = "wp-content/uploads/";
+	public static final String CONST_DOC_ROOT_RID = "/var/www/html/xvideos/";
 
 	public static final String CONST_POST_STATUS_PUBLISH = "publish";
 	public static final String CONST_POST_STATUS_INHERIT = "inherit";
@@ -72,16 +76,19 @@ public class WpUpdaterUtils {
 	}
 
 	public static String getPostGuid(long postId) {
-		return CONST_BASE_URL + String.format("/?p=%s", postId);
+		return CONST_BASE_URL + String.format("?p=%s", postId);
 	}
 
 	public static String getRevisionGuid(long postId) {
-		return CONST_BASE_URL + String.format("/archives/%s", postId);
+		return CONST_BASE_URL + String.format("archives/%s", postId);
 	}
 
-	public static String getAttachGuid(long postId) {
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		return CONST_BASE_URL + String.format("/wp-content/uploads/%s/%s/%s", c.get(Calendar.YEAR), c.get(Calendar.MONTH), postId);
+	public static String getAttachGuidBase(String fileName) {
+		return CONST_IMAGE_STORE_DIR + getAttacheMetaValue(fileName);
+	}
+
+	public static String getAttachGuid(String fileName) {
+		return CONST_BASE_URL + getAttachGuidBase(fileName);
 	}
 
 	public static String getContentFromTemplate(String name, Object dataModel) {
@@ -102,5 +109,14 @@ public class WpUpdaterUtils {
 		}
 		log.debug(ret);
 		return ret;
+	}
+
+	public static File getUploadFile(String fileNameEx) {
+		return new File(CONST_DOC_ROOT_RID + getAttachGuidBase(fileNameEx));
+	}
+
+	public static String getAttacheMetaValue(String fileName) {
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		return String.format("%s/%02d/%s", c.get(Calendar.YEAR), c.get(Calendar.MONTH), fileName);
 	}
 }
