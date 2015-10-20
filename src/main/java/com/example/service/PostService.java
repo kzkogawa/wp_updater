@@ -14,6 +14,7 @@ import com.example.mapper.WpTermRelationshipsMapper;
 import com.example.model.wp.WpPostmeta;
 import com.example.model.wp.WpPostsCriteria;
 import com.example.model.wp.WpPostsWithBLOBs;
+import com.example.util.WpUpdaterUtils;
 
 @Component
 public class PostService {
@@ -29,7 +30,7 @@ public class PostService {
 		for (WpPostsWithBLOBFactory wpPostsWithBLOBFactory : wpPostsWithBLOBFactories) {
 			WpPostsWithBLOBs post = wpPostsWithBLOBFactory.getPostForInsert();
 			WpPostsCriteria wpPostsCriteria = new WpPostsCriteria();
-			wpPostsCriteria.createCriteria().andPostNameLike(post.getPostName());
+			wpPostsCriteria.createCriteria().andPostNameLike(post.getPostName()).andPostStatusNotEqualTo(WpUpdaterUtils.CONST_POST_STATUS_TRASH);
 			if (postsMapper.selectByExample(wpPostsCriteria).size() == 0) {
 				// insert post
 				postsMapper.insert(post);

@@ -32,6 +32,7 @@ public class WpUpdaterUtils {
 
 	public static final String CONST_POST_STATUS_PUBLISH = "publish";
 	public static final String CONST_POST_STATUS_INHERIT = "inherit";
+	public static final String CONST_POST_STATUS_TRASH ="trash";
 	public static final String CONST_COMMENT_STATUS_CLOSED = "closed";
 	public static final String CONST_PING_STATUS_CLOSED = "closed";
 	public static final String CONST_TAXONOMY_CATEGORY = "category";
@@ -117,6 +118,6 @@ public class WpUpdaterUtils {
 
 	public static String getAttacheMetaValue(String fileName) {
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		return String.format("%s/%02d/%s", c.get(Calendar.YEAR), c.get(Calendar.MONTH), fileName);
+		return String.format("%s/%02d/%s", c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, fileName);
 	}
 }
