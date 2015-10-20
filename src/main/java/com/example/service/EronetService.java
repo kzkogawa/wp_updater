@@ -40,6 +40,7 @@ public class EronetService implements ICrawlService {
 			HTMLImageElement gif = (HTMLImageElement) imgs.item(i);
 			if (gif.getParentNode().getNodeName().equals("TD")) {
 				EronetModel eronetModel = new EronetModel();
+				eronetModel.getVideoUrls().add(target);
 				for (int j = 0, o = gif.getParentNode().getChildNodes().getLength(); j < o; j++) {
 					Node node = gif.getParentNode().getChildNodes().item(j);
 					if (node instanceof HTMLAnchorElement) {
@@ -54,6 +55,7 @@ public class EronetService implements ICrawlService {
 						}
 					}
 				}
+				eronetModel.getVideoUrls().add(target);
 				wpPostsWithBLOBFactories.add(convertModel(eronetModel));
 			}
 		}
