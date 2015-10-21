@@ -7,10 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.factory.WpPostmetaFactory;
 import com.example.factory.WpPostsWithBLOBFactory;
 import com.example.mapper.WpPostmetaMapper;
 import com.example.mapper.WpPostsMapper;
 import com.example.mapper.WpTermRelationshipsMapper;
+import com.example.model.PostServiceModel;
 import com.example.model.wp.WpPostmeta;
 import com.example.model.wp.WpPostsCriteria;
 import com.example.model.wp.WpPostsWithBLOBs;
@@ -26,31 +28,41 @@ public class PostService {
 	@Autowired
 	private WpTermRelationshipsMapper relationshipsMapper;
 
-	public void InsertPosts(List<WpPostsWithBLOBFactory> wpPostsWithBLOBFactories) {
-		for (WpPostsWithBLOBFactory wpPostsWithBLOBFactory : wpPostsWithBLOBFactories) {
-			WpPostsWithBLOBs post = wpPostsWithBLOBFactory.getPostForInsert();
+	public void InsertPosts(List<PostServiceModel> serviceModels) {
+		for (PostServiceModel serviceModel : serviceModels) {
+			WpPostsWithBLOBs post = WpPostsWithBLOBFactory.getPostData(serviceModel);
 			WpPostsCriteria wpPostsCriteria = new WpPostsCriteria();
 			wpPostsCriteria.createCriteria().andPostNameLike(post.getPostName()).andPostStatusNotEqualTo(WpUpdaterUtils.CONST_POST_STATUS_TRASH);
 			if (postsMapper.selectByExample(wpPostsCriteria).size() == 0) {
 				// insert post
 				postsMapper.insert(post);
-				wpPostsWithBLOBFactory.preparePostUpdate();
-				postsMapper.updateByPrimaryKeyWithBLOBs(wpPostsWithBLOBFactory.getPostForUpdate());
+				post.setGuid(WpUpdaterUtils.getPostGuid(post.getId()));
+				postsMapper.updateByPrimaryKeyWithBLOBs(post);
 				// insert revision
-				WpPostsWithBLOBs revision = wpPostsWithBLOBFactory.getRevisionForInsert();
+				WpPostsWithBLOBs revision = WpPostsWithBLOBFactory.getRevisionData(post.getId(), serviceModel);
 				postsMapper.insert(revision);
-				wpPostsWithBLOBFactory.prepareRevisionUpdate();
-				postsMapper.updateByPrimaryKeyWithBLOBs(wpPostsWithBLOBFactory.getRevisionForUpdate());
+				revision.setGuid(WpUpdaterUtils.getRevisionGuid(revision.getId()));
+				postsMapper.updateByPrimaryKeyWithBLOBs(revision);
 				// insert image
-				WpPostsWithBLOBs image = wpPostsWithBLOBFactory.getImageForInsert();
+				WpPostsWithBLOBs image = WpPostsWithBLOBFactory.getImageData(post.getId(), serviceModel);
 				postsMapper.insert(image);
-				wpPostsWithBLOBFactory.prepareImageUpdate();
-				postsMapper.updateByPrimaryKeyWithBLOBs(wpPostsWithBLOBFactory.getImageForUpdate());
+
 				// insert postmetas
-				for (WpPostmeta postmeta : wpPostsWithBLOBFactory.getPostMetas()) {
-					postmetaMapper.insert(postmeta);
+				WpPostmeta editLastMeta = WpPostmetaFactory.getPostEditLastMetas(post.getId(), serviceModel);
+				postmetaMapper.insert(editLastMeta);
+				WpPostmeta editLockMeta = WpPostmetaFactory.getPostEditLockMetas(post.getId(), serviceModel);
+				postmetaMapper.insert(editLockMeta);
+				WpPostmeta thmIdMeta = WpPostmetaFactory.getPostThmIdMetas(post.getId(), image.getId(), serviceModel);
+				postmetaMapper.insert(thmIdMeta);
+				WpPostmeta attachedFileMeta = WpPostmetaFactory.getImageAttachedFileMetas(post.getId(), serviceModel);
+				postmetaMapper.insert(attachedFileMeta);
+
+				for (String tag : serviceModel.getTags()) {
+					// TODO
 				}
-				// TODO:insert post-tag-relations
+				for (String category : serviceModel.getCategorys()) {
+					// TODO
+				}
 			} else {
 				log.info("same post found " + post);
 			}

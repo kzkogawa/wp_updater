@@ -16,8 +16,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.html.HTMLAnchorElement;
 import org.w3c.dom.html.HTMLImageElement;
 
-import com.example.factory.WpPostsWithBLOBFactory;
-import com.example.model.EronetModel;
+import com.example.model.PostServiceModel;
 import com.example.util.WpUpdaterUtils;
 
 @Component
@@ -30,7 +29,8 @@ public class EronetService implements ICrawlService {
 	@Transactional
 	@Override
 	public void doCrawl(final String target) {
-		List<WpPostsWithBLOBFactory> wpPostsWithBLOBFactories = new ArrayList<WpPostsWithBLOBFactory>();
+		log.debug(target);
+		List<PostServiceModel> serviceModels = new ArrayList<PostServiceModel>();
 
 		DOMParser neko = WpUpdaterUtils.getDOMParserInstance(target);
 
@@ -39,35 +39,25 @@ public class EronetService implements ICrawlService {
 		for (int i = 0, n = imgs.getLength(); i < n; i++) {
 			HTMLImageElement gif = (HTMLImageElement) imgs.item(i);
 			if (gif.getParentNode().getNodeName().equals("TD")) {
-				EronetModel eronetModel = new EronetModel();
-				eronetModel.getVideoUrls().add(target);
+				PostServiceModel serviceModel = new PostServiceModel("eronet.ftl");
+				serviceModel.setOrgPageUrl(target);
 				for (int j = 0, o = gif.getParentNode().getChildNodes().getLength(); j < o; j++) {
 					Node node = gif.getParentNode().getChildNodes().item(j);
 					if (node instanceof HTMLAnchorElement) {
 						HTMLAnchorElement anc = (HTMLAnchorElement) node;
 						if (anc.getFirstChild().getNodeName().equals("IMG")) {
 							HTMLImageElement img = (HTMLImageElement) anc.getFirstChild();
-							eronetModel.setImageSrc(img.getSrc());
-							eronetModel.setImageAlt(img.getAlt());
-							eronetModel.setImageLink(StringUtils.substringAfter(anc.getHref(), "url="));
+							serviceModel.setPostImageUrl(img.getSrc());
+							serviceModel.setPostTitle(img.getAlt());
+							serviceModel.setPostSourceUrl(StringUtils.substringAfter(anc.getHref(), "url="));
 						} else if (NumberUtils.isNumber(anc.getTextContent())) {
-							eronetModel.getVideoUrls().add(anc.getHref());
+							serviceModel.addVideoUrls(anc.getHref());
 						}
 					}
 				}
-				eronetModel.getVideoUrls().add(target);
-				wpPostsWithBLOBFactories.add(convertModel(eronetModel));
+				serviceModels.add(serviceModel);
 			}
 		}
-		postService.InsertPosts(wpPostsWithBLOBFactories);
-	}
-
-	public WpPostsWithBLOBFactory convertModel(final EronetModel eronetModel) {
-		log.debug("", eronetModel);
-		WpPostsWithBLOBFactory postsWithBLOBFactory = new WpPostsWithBLOBFactory();
-		postsWithBLOBFactory.setPostTitle(eronetModel.getImageAlt());
-		postsWithBLOBFactory.setPostContent(WpUpdaterUtils.getContentFromTemplate("eronet.ftl", eronetModel));
-		postsWithBLOBFactory.setImageLink(eronetModel.getImageSrc());
-		return postsWithBLOBFactory;
+		postService.InsertPosts(serviceModels);
 	}
 }
