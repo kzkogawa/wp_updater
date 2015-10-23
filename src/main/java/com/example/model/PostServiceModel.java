@@ -130,14 +130,14 @@ public class PostServiceModel {
 	}
 
 	public String getPostContent() {
-		if (!StringUtils.isNoneEmpty(template) && StringUtils.isNoneEmpty(postContent)) {
+		if (!StringUtils.isEmpty(template) && StringUtils.isEmpty(postContent)) {
 			postContent = WpUpdaterUtils.getContentFromTemplate(template, this);
 		}
 		return postContent;
 	}
 
 	public String getImageFileName() {
-		if (StringUtils.isNoneEmpty(imageFileName)) {
+		if (StringUtils.isEmpty(imageFileName)) {
 			imageFileName = String.valueOf(WpUpdaterUtils.getCurrentUtcTime().getTime());
 		}
 		return imageFileName;
