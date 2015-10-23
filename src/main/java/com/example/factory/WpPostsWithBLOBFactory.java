@@ -47,12 +47,8 @@ public class WpPostsWithBLOBFactory {
 			image.setPostName(serviceModel.getImageFileName());
 			image.setPostMimeType("image/" + serviceModel.getImageFileExtension());
 			image.setGuid(WpUpdaterUtils.getAttachGuid(serviceModel.getImageFileNameWithExtension()));
-			try {
-				FileUtils.copyURLToFile(new URL(serviceModel.getPostImageUrl()), WpUpdaterUtils.getUploadFile(serviceModel.getImageFileNameWithExtension()));
-			} catch (Exception e) {
-				log.error("", e);
-			}
+			WpUpdaterUtils.saveImage(serviceModel.getPostImageUrl(), serviceModel.getImageFileNameWithExtension());
 		}
-		return null;
+		return image;
 	}
 }

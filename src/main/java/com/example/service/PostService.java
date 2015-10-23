@@ -16,6 +16,7 @@ import com.example.model.PostServiceModel;
 import com.example.model.wp.WpPostmeta;
 import com.example.model.wp.WpPostsCriteria;
 import com.example.model.wp.WpPostsWithBLOBs;
+import com.example.model.wp.WpTermRelationships;
 import com.example.util.WpUpdaterUtils;
 
 @Component
@@ -27,8 +28,11 @@ public class PostService {
 	private WpPostmetaMapper postmetaMapper;
 	@Autowired
 	private WpTermRelationshipsMapper relationshipsMapper;
+	@Autowired
+	private TermService termService;
 
 	public void InsertPosts(List<PostServiceModel> serviceModels) {
+		log.debug("inserting serviceModels.size=%s", serviceModels.size());
 		for (PostServiceModel serviceModel : serviceModels) {
 			WpPostsWithBLOBs post = WpPostsWithBLOBFactory.getPostData(serviceModel);
 			WpPostsCriteria wpPostsCriteria = new WpPostsCriteria();
@@ -58,13 +62,17 @@ public class PostService {
 				postmetaMapper.insert(attachedFileMeta);
 
 				for (String tag : serviceModel.getTags()) {
-					// TODO
+					WpTermRelationships termRelationships = termService.getWpTermRelationshipsByTagName(tag);
+					termRelationships.setObjectId(post.getId());
+					relationshipsMapper.insert(termRelationships);
 				}
 				for (String category : serviceModel.getCategorys()) {
-					// TODO
+					WpTermRelationships termRelationships = termService.getWpTermRelationshipsByCategoryName(category);
+					termRelationships.setObjectId(post.getId());
+					relationshipsMapper.insert(termRelationships);
 				}
 			} else {
-				log.info("same post found " + post);
+				log.info("Same post found {%s}", post);
 			}
 		}
 	}

@@ -30,8 +30,9 @@ public class EronetService implements ICrawlService {
 	@Override
 	public void doCrawl(final String target) {
 		log.debug(target);
-		List<PostServiceModel> serviceModels = new ArrayList<PostServiceModel>();
+		int counter = 0;
 
+		List<PostServiceModel> serviceModels = new ArrayList<PostServiceModel>();
 		DOMParser neko = WpUpdaterUtils.getDOMParserInstance(target);
 
 		// parse html
@@ -40,6 +41,17 @@ public class EronetService implements ICrawlService {
 			HTMLImageElement gif = (HTMLImageElement) imgs.item(i);
 			if (gif.getParentNode().getNodeName().equals("TD")) {
 				PostServiceModel serviceModel = new PostServiceModel("eronet.ftl");
+				serviceModel.addCategorys("エロ動画");
+				if (StringUtils.contains(target, "jk001.html")) {
+					serviceModel.addTag("女子高生");
+				} else if (StringUtils.contains(target, "kn001.html")) {
+					serviceModel.addTag("巨乳");
+				} else if (StringUtils.contains(target, "s4001.html")) {
+					serviceModel.addTag("Xvideos");
+				} else if (StringUtils.contains(target, "s7001.html")) {
+					serviceModel.addTag("Xhamster");
+				}
+
 				serviceModel.setOrgPageUrl(target);
 				for (int j = 0, o = gif.getParentNode().getChildNodes().getLength(); j < o; j++) {
 					Node node = gif.getParentNode().getChildNodes().item(j);
@@ -56,6 +68,9 @@ public class EronetService implements ICrawlService {
 					}
 				}
 				serviceModels.add(serviceModel);
+				if (counter++ > 3) {
+					break;
+				}
 			}
 		}
 		postService.InsertPosts(serviceModels);

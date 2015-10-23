@@ -1,6 +1,9 @@
 package com.example.util;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
@@ -9,8 +12,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +39,7 @@ public class WpUpdaterUtils {
 
 	public static final String CONST_POST_STATUS_PUBLISH = "publish";
 	public static final String CONST_POST_STATUS_INHERIT = "inherit";
-	public static final String CONST_POST_STATUS_TRASH ="trash";
+	public static final String CONST_POST_STATUS_TRASH = "trash";
 	public static final String CONST_COMMENT_STATUS_CLOSED = "closed";
 	public static final String CONST_PING_STATUS_CLOSED = "closed";
 	public static final String CONST_TAXONOMY_CATEGORY = "category";
@@ -119,5 +126,35 @@ public class WpUpdaterUtils {
 	public static String getAttacheMetaValue(String fileName) {
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		return String.format("%s/%02d/%s", c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, fileName);
+	}
+
+	public static void saveImage(String postImageUrl, String imageFileNameWithExtension) {
+		try {
+			FileUtils.copyURLToFile(new URL(postImageUrl), getUploadFile(imageFileNameWithExtension));
+			resizeImage(getUploadFile(imageFileNameWithExtension));
+		} catch (Exception e) {
+			log.error("", e);
+		}
+	}
+
+	public static void resizeImage(File uploadFile) throws IOException {
+		BufferedImage bImage = ImageIO.read(uploadFile);
+		int width = bImage.getWidth(), height = bImage.getHeight();
+		int bigger = width > height ? width : height, smaller = width > height ? height : width;
+		int tmpBigger = 300, tmpSmaller = (int) (tmpBigger * ((double) smaller / bigger));
+		if (bigger * smaller < tmpBigger * tmpSmaller) {
+			if (width > height) {
+				width = tmpBigger;
+				height = tmpSmaller;
+			} else {
+				width = tmpSmaller;
+				height = tmpBigger;
+			}
+			BufferedImage newBImage = new BufferedImage(width, height, bImage.getType());
+			Graphics2D graphics2d = newBImage.createGraphics();
+			graphics2d.drawImage(bImage.getScaledInstance(width, height, bImage.getType()), 0, 0, null);
+			graphics2d.dispose();
+			ImageIO.write(newBImage, FilenameUtils.getExtension(uploadFile.getPath()), uploadFile);
+		}
 	}
 }
