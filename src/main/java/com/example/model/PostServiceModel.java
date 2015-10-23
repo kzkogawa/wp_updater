@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.example.util.WpUpdaterUtils;
-import com.mysql.jdbc.StringUtils;
 
 public class PostServiceModel {
 	private String orgPageUrl;
@@ -130,14 +130,14 @@ public class PostServiceModel {
 	}
 
 	public String getPostContent() {
-		if (!StringUtils.isNullOrEmpty(template) && StringUtils.isNullOrEmpty(postContent)) {
+		if (!StringUtils.isNoneEmpty(template) && StringUtils.isNoneEmpty(postContent)) {
 			postContent = WpUpdaterUtils.getContentFromTemplate(template, this);
 		}
 		return postContent;
 	}
 
 	public String getImageFileName() {
-		if (StringUtils.isNullOrEmpty(imageFileName)) {
+		if (StringUtils.isNoneEmpty(imageFileName)) {
 			imageFileName = String.valueOf(WpUpdaterUtils.getCurrentUtcTime().getTime());
 		}
 		return imageFileName;
