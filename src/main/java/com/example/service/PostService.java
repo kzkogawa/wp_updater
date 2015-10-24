@@ -58,7 +58,7 @@ public class PostService {
 				postmetaMapper.insert(editLockMeta);
 				WpPostmeta thmIdMeta = WpPostmetaFactory.getPostThmIdMetas(post.getId(), image.getId(), serviceModel);
 				postmetaMapper.insert(thmIdMeta);
-				WpPostmeta attachedFileMeta = WpPostmetaFactory.getImageAttachedFileMetas(post.getId(), serviceModel);
+				WpPostmeta attachedFileMeta = WpPostmetaFactory.getImageAttachedFileMetas(image.getId(), serviceModel);
 				postmetaMapper.insert(attachedFileMeta);
 
 				for (String tag : serviceModel.getTags()) {
