@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -18,6 +19,8 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,11 +79,23 @@ public class WpUpdaterUtils {
 	}
 
 	public static Date getCurrentUtcTime() {
-		return Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
+		return getCurrentDate("UTC");
 	}
 
 	public static Date getCurrentGmtTime() {
-		return Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime();
+		return getCurrentDate("GMT");
+	}
+
+	private static Date getCurrentDate(String timeZone) {
+		String DATE_CHANGE_FORMAT = "yyyyMMdd HH:mm:ss";
+		Date jst = Calendar.getInstance().getTime();
+		String utc = DateFormatUtils.format(jst, DATE_CHANGE_FORMAT, TimeZone.getTimeZone(timeZone));
+		try {
+			return DateUtils.parseDate(utc, DATE_CHANGE_FORMAT);
+		} catch (ParseException e) {
+			log.error("", e);
+		}
+		return jst;
 	}
 
 	public static String getPostGuid(long postId) {

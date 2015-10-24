@@ -1,5 +1,7 @@
 package com.example.model.wp;
 
+import java.util.Calendar;
+
 import com.example.util.WpUpdaterUtils;
 
 public class WpPostsWithBLOBs extends WpPosts {
@@ -165,8 +167,8 @@ public class WpPostsWithBLOBs extends WpPosts {
 
 	public WpPostsWithBLOBs() {
 		setPostAuthor(1L);
-		setPostDate(WpUpdaterUtils.getCurrentUtcTime());
-		setPostDateGmt(WpUpdaterUtils.getCurrentGmtTime());
+		setPostDate(Calendar.getInstance().getTime());
+		setPostDateGmt(WpUpdaterUtils.getCurrentUtcTime());
 		setPostExcerpt("");
 		setCommentStatus(WpUpdaterUtils.CONST_COMMENT_STATUS_CLOSED);
 		setPingStatus(WpUpdaterUtils.CONST_COMMENT_STATUS_CLOSED);
