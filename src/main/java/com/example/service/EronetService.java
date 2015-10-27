@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.xerces.dom.ElementNSImpl;
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.html.HTMLAnchorElement;
+import org.w3c.dom.html.HTMLElement;
 import org.w3c.dom.html.HTMLImageElement;
 
 import com.example.model.PostServiceModel;
@@ -61,7 +63,7 @@ public class EronetService implements ICrawlService {
 							HTMLImageElement img = (HTMLImageElement) anc.getFirstChild();
 							serviceModel.setPostImageUrl(img.getSrc());
 							serviceModel.setPostTitle(img.getAlt());
-							serviceModel.setPostSourceUrl(StringUtils.substringAfter(anc.getHref(), "url="));
+							serviceModel.setPostSourceUrl(getPostSourceUrl(StringUtils.substringAfter(anc.getHref(), "url=")));
 						} else if (NumberUtils.isNumber(anc.getTextContent())) {
 							serviceModel.addVideoUrls(anc.getHref());
 						}
@@ -74,5 +76,29 @@ public class EronetService implements ICrawlService {
 			}
 		}
 		postService.InsertPosts(serviceModels);
+	}
+
+	private String getPostSourceUrl(String orgUrl) {
+		DOMParser neko = WpUpdaterUtils.getDOMParserInstance(orgUrl);
+		if (StringUtils.contains(orgUrl, "/xvideo-jp.com/")) {
+			NodeList imgs = neko.getDocument().getElementById("post-" + StringUtils.substringAfterLast(orgUrl, "/")).getElementsByTagName("IMG");
+			return imgs.item(0).getAttributes().getNamedItem("src").getNodeValue();
+		} else if (StringUtils.contains(orgUrl, "www.youskbe.com")) {
+			NodeList imgs = ((HTMLElement) neko.getDocument().getElementsByTagName("ARTICLE").item(0)).getElementsByTagName("IMG");
+			return imgs.item(0).getAttributes().getNamedItem("src").getNodeValue();
+		} else if (StringUtils.contains(orgUrl, "blog.livedoor.jp/dogazo")) {
+			NodeList divs = neko.getDocument().getElementsByTagName("DIV");
+			for (int i = 0, n = divs.getLength(); i < n; i++) {
+				ElementNSImpl div = (ElementNSImpl) divs.item(i);
+				if (StringUtils.equals(div.getAttribute("class"), "article-body-inner")) {
+					return div.getFirstElementChild().getAttribute("src");
+				}
+			}
+			NodeList imgs = ((HTMLElement) neko.getDocument().getElementsByTagName("DIV").item(0)).getElementsByTagName("IMG");
+			return imgs.item(0).getAttributes().getNamedItem("src").getNodeValue();
+		} else {
+			log.info("[%s] has not been parsed", orgUrl);
+		}
+		return orgUrl;
 	}
 }
