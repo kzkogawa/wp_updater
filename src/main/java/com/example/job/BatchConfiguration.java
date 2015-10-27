@@ -41,8 +41,8 @@ public class BatchConfiguration {
 				crawlService.doCrawl("http://xxeronetxx.info/ranking1day.html");
 				crawlService.doCrawl("http://xxeronetxx.info/jk001.html");
 				crawlService.doCrawl("http://xxeronetxx.info/kn001.html");
-				crawlService.doCrawl("http://xxeronetxx.info/s4001.html");
-				crawlService.doCrawl("http://xxeronetxx.info/s7001.html");
+//				crawlService.doCrawl("http://xxeronetxx.info/s4001.html");
+//				crawlService.doCrawl("http://xxeronetxx.info/s7001.html");
 				return null;
 			}
 		}).build();
