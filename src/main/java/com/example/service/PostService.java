@@ -32,7 +32,7 @@ public class PostService {
 	private TermService termService;
 
 	public void InsertPosts(List<PostServiceModel> serviceModels) {
-		log.debug("inserting serviceModels.size=%s", serviceModels.size());
+		log.debug("inserting serviceModels.size={}", serviceModels.size());
 		for (PostServiceModel serviceModel : serviceModels) {
 			WpPostsWithBLOBs post = WpPostsWithBLOBFactory.getPostData(serviceModel);
 			WpPostsCriteria wpPostsCriteria = new WpPostsCriteria();
@@ -72,7 +72,7 @@ public class PostService {
 					relationshipsMapper.insert(termRelationships);
 				}
 			} else {
-				log.info("Same post found {%s}", post);
+				log.info("Same post found {}", post);
 			}
 		}
 	}

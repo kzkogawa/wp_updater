@@ -1,6 +1,7 @@
 package com.example.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -138,7 +139,7 @@ public class PostServiceModel {
 
 	public String getImageFileName() {
 		if (StringUtils.isEmpty(imageFileName)) {
-			imageFileName = String.valueOf(WpUpdaterUtils.getCurrentUtcTime().getTime());
+			imageFileName = String.valueOf(Calendar.getInstance().getTimeInMillis());
 		}
 		return imageFileName;
 	}

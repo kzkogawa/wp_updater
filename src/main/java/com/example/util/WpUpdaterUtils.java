@@ -156,8 +156,9 @@ public class WpUpdaterUtils {
 		BufferedImage bImage = ImageIO.read(uploadFile);
 		int width = bImage.getWidth(), height = bImage.getHeight();
 		int bigger = width > height ? width : height, smaller = width > height ? height : width;
-		int tmpBigger = 300, tmpSmaller = (int) (tmpBigger * ((double) smaller / bigger));
+		int tmpBigger = 250, tmpSmaller = (int) (tmpBigger * ((double) smaller / bigger));
 		if (bigger * smaller < tmpBigger * tmpSmaller) {
+			log.info("[{}] width={}, height={} will be resized", uploadFile.getName(), width, height);
 			if (width > height) {
 				width = tmpBigger;
 				height = tmpSmaller;

@@ -74,13 +74,13 @@ public class TermService {
 		term.setName(name);
 		term.setSlug(WpUpdaterUtils.urlEncode(name));
 		termsMapper.insert(term);
-		log.debug("term=%s", term);
+		log.debug("term={}", term);
 
 		WpTermTaxonomy taxonomy = new WpTermTaxonomy();
 		taxonomy.setTermId(term.getTermId());
 		taxonomy.setTaxonomy(tax);
 		taxonomyMapper.insert(taxonomy);
-		log.debug("taxonomy=%s", taxonomy);
+		log.debug("taxonomy={}", taxonomy);
 		return taxonomy;
 	}
 }
