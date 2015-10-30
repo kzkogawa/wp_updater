@@ -10,13 +10,13 @@
 			<property name="replaceString" value="Criteria"/>
 		</plugin>
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/wp_xvideos" userId="wordpress" password="password" />
-		<javaModelGenerator targetPackage="com.example.model.wp" targetProject="wp-updater">
+		<javaModelGenerator targetPackage="com.example.model.wp" targetProject="wp_updater">
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
-		<sqlMapGenerator targetPackage="sqlmap" targetProject="wp-updater/src/main/resources">
+		<sqlMapGenerator targetPackage="sqlmap" targetProject="wp_updater/src/main/resources">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
-		<javaClientGenerator targetPackage="com.example.mapper" targetProject="wp-updater" type="XMLMAPPER" />
+		<javaClientGenerator targetPackage="com.example.mapper" targetProject="wp_updater" type="XMLMAPPER" />
 
 		<table tableName="wp_postmeta">
 			<generatedKey column="meta_id" sqlStatement="MySql" identity="true"/>
@@ -32,6 +32,6 @@
 		<table tableName="wp_terms">
 			<generatedKey column="term_id" sqlStatement="MySql" identity="true"/>
 		</table>
-
+		<table tableName="embedded_tag" />
 	</context>
 </generatorConfiguration>

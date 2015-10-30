@@ -2,6 +2,7 @@ package com.example.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,13 @@ import org.springframework.stereotype.Component;
 
 import com.example.factory.WpPostmetaFactory;
 import com.example.factory.WpPostsWithBLOBFactory;
+import com.example.mapper.EmbeddedTagMapper;
 import com.example.mapper.WpPostmetaMapper;
 import com.example.mapper.WpPostsMapper;
 import com.example.mapper.WpTermRelationshipsMapper;
 import com.example.model.PostServiceModel;
+import com.example.model.wp.EmbeddedTag;
+import com.example.model.wp.EmbeddedTagCriteria;
 import com.example.model.wp.WpPostmeta;
 import com.example.model.wp.WpPostsCriteria;
 import com.example.model.wp.WpPostsWithBLOBs;
@@ -30,6 +34,8 @@ public class PostService {
 	private WpTermRelationshipsMapper relationshipsMapper;
 	@Autowired
 	private TermService termService;
+	@Autowired
+	private EmbeddedTagMapper embeddedTagMapper;
 
 	public void InsertPosts(List<PostServiceModel> serviceModels) {
 		log.debug("inserting serviceModels.size={}", serviceModels.size());
@@ -60,6 +66,13 @@ public class PostService {
 				postmetaMapper.insert(thmIdMeta);
 				WpPostmeta attachedFileMeta = WpPostmetaFactory.getImageAttachedFileMetas(image.getId(), serviceModel);
 				postmetaMapper.insert(attachedFileMeta);
+
+				List<EmbeddedTag> embeddedTags = embeddedTagMapper.selectByExample(new EmbeddedTagCriteria());
+				for (EmbeddedTag embeddedTag : embeddedTags) {
+					if (StringUtils.contains(serviceModel.getPostTitle().toLowerCase(), embeddedTag.getKeyword().toLowerCase())) {
+						serviceModel.addTag(embeddedTag.getTag());
+					}
+				}
 
 				for (String tag : serviceModel.getTags()) {
 					WpTermRelationships termRelationships = termService.getWpTermRelationshipsByTagName(tag);

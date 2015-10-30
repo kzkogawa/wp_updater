@@ -111,8 +111,10 @@ public class PostServiceModel {
 	 * @param tags
 	 *            the tags to set
 	 */
-	public void addTag(String Tag) {
-		this.tags.add(Tag);
+	public void addTag(String tag) {
+		if (!this.tags.contains(tag)) {
+			this.tags.add(tag);
+		}
 	}
 
 	/**
@@ -127,7 +129,9 @@ public class PostServiceModel {
 	 *            the categorys to set
 	 */
 	public void addCategorys(String category) {
-		this.categorys.add(category);
+		if (!this.categorys.contains(category)) {
+			this.categorys.add(category);
+		}
 	}
 
 	public String getPostContent() {
