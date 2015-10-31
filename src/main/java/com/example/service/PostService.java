@@ -88,5 +88,6 @@ public class PostService {
 				log.info("Same post found {}", post);
 			}
 		}
+		termService.updateUsageCount();
 	}
 }

@@ -103,4 +103,6 @@ public interface WpTermTaxonomyMapper {
 	 * @mbggenerated  Thu Oct 29 22:05:09 PDT 2015
 	 */
 	int updateByPrimaryKey(WpTermTaxonomy record);
+
+	int updateUsageCount();
 }

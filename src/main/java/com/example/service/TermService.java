@@ -83,4 +83,8 @@ public class TermService {
 		log.debug("taxonomy={}", taxonomy);
 		return taxonomy;
 	}
+
+	public void updateUsageCount() {
+		taxonomyMapper.updateUsageCount();
+	}
 }

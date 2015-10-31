@@ -163,6 +163,6 @@ public class WpTermTaxonomy {
 	public WpTermTaxonomy() {
 		setDescription("");
 		setParent(0L);
-		setCount(0L);
+		setCount(1L);
 	}
 }
