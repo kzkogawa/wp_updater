@@ -19,6 +19,7 @@ public class WpPostsWithBLOBFactory {
 		post.setPostTitle(serviceModel.getPostTitle());
 		post.setPostName(WpUpdaterUtils.urlEncode(StringUtils.substring(serviceModel.getPostTitle(), 0, 22)).toLowerCase());
 		post.setPostContent(serviceModel.getPostContent());
+		log.debug("", post);
 		return post;
 	}
 
@@ -30,6 +31,7 @@ public class WpPostsWithBLOBFactory {
 		revision.setPostContent(serviceModel.getPostContent());
 		revision.setPostName(String.format("%s-revision-v1", postId));
 		revision.setPostParent(postId);
+		log.debug("", postId);
 		return revision;
 	}
 
@@ -44,8 +46,9 @@ public class WpPostsWithBLOBFactory {
 			image.setPostName(serviceModel.getImageFileName());
 			image.setPostMimeType("image/" + serviceModel.getImageFileExtension());
 			image.setGuid(WpUpdaterUtils.getAttachGuid(serviceModel.getImageFileNameWithExtension()));
-			WpUpdaterUtils.saveImage(serviceModel.getPostImageUrl(), serviceModel.getImageFileNameWithExtension());
+			image.setImageInfo(WpUpdaterUtils.saveImage(serviceModel.getPostImageUrl(), serviceModel.getImageFileNameWithExtension()));
 		}
+		log.debug("", image);
 		return image;
 	}
 }

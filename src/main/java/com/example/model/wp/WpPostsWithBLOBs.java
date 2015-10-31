@@ -1,6 +1,7 @@
 package com.example.model.wp;
 
 import java.util.Calendar;
+import java.util.Map;
 
 import com.example.util.WpUpdaterUtils;
 
@@ -182,5 +183,12 @@ public class WpPostsWithBLOBs extends WpPosts {
 		setCommentCount(0L);
 		setGuid("");
 		setPostMimeType("");
+	}
+	private Map<String, Integer> saveImage;
+	public void setImageInfo(Map<String, Integer> saveImage) {
+		this.saveImage = saveImage;
+	}
+	public Map<String, Integer> getImageInfo() {
+		return this.saveImage;
 	}
 }

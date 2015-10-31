@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
@@ -143,18 +144,22 @@ public class WpUpdaterUtils {
 		return String.format("%s/%02d/%s", c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, fileName);
 	}
 
-	public static void saveImage(String postImageUrl, String imageFileNameWithExtension) {
+	public static Map<String, Integer> saveImage(String postImageUrl, String imageFileNameWithExtension) {
 		try {
 			FileUtils.copyURLToFile(new URL(postImageUrl), getUploadFile(imageFileNameWithExtension));
-			resizeImage(getUploadFile(imageFileNameWithExtension));
+			return resizeImage(getUploadFile(imageFileNameWithExtension));
 		} catch (Exception e) {
 			log.error("", e);
 		}
+		return null;
 	}
 
-	public static void resizeImage(File uploadFile) throws IOException {
+	public static Map<String, Integer> resizeImage(File uploadFile) throws IOException {
+		Map<String, Integer> imageInfo = new java.util.HashMap<String, Integer>();
 		BufferedImage bImage = ImageIO.read(uploadFile);
 		int width = bImage.getWidth(), height = bImage.getHeight();
+		imageInfo.put("width", width);
+		imageInfo.put("height", height);
 		int bigger = width > height ? width : height, smaller = width > height ? height : width;
 		int tmpBigger = 250, tmpSmaller = (int) (tmpBigger * ((double) smaller / bigger));
 		if (bigger * smaller < tmpBigger * tmpSmaller) {
@@ -166,11 +171,14 @@ public class WpUpdaterUtils {
 				width = tmpSmaller;
 				height = tmpBigger;
 			}
+			imageInfo.put("width", width);
+			imageInfo.put("height", height);
 			BufferedImage newBImage = new BufferedImage(width, height, bImage.getType());
 			Graphics2D graphics2d = newBImage.createGraphics();
 			graphics2d.drawImage(bImage.getScaledInstance(width, height, bImage.getType()), 0, 0, null);
 			graphics2d.dispose();
 			ImageIO.write(newBImage, FilenameUtils.getExtension(uploadFile.getPath()), uploadFile);
 		}
+		return imageInfo;
 	}
 }

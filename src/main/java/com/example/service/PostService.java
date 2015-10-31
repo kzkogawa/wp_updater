@@ -1,11 +1,13 @@
 package com.example.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.example.factory.WpPostmetaFactory;
@@ -26,6 +28,8 @@ import com.example.util.WpUpdaterUtils;
 @Component
 public class PostService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
+	@Autowired
+	private Environment env;
 	@Autowired
 	private WpPostsMapper postsMapper;
 	@Autowired
@@ -66,6 +70,16 @@ public class PostService {
 				postmetaMapper.insert(thmIdMeta);
 				WpPostmeta attachedFileMeta = WpPostmetaFactory.getImageAttachedFileMetas(image.getId(), serviceModel);
 				postmetaMapper.insert(attachedFileMeta);
+
+				Map<String, Integer> imgInfo = image.getImageInfo();
+				if (imgInfo != null) {
+					String val = String.format(env.getProperty("wp.attachment.metadata"), imgInfo.get("width"), imgInfo.get("height"), attachedFileMeta.getMetaValue());
+					WpPostmeta attachmentMetadata = new WpPostmeta();
+					attachmentMetadata.setPostId(image.getId());
+					attachmentMetadata.setMetaKey(WpUpdaterUtils.CONST_POST_META_ATTACH_META);
+					attachmentMetadata.setMetaValue(val);
+					postmetaMapper.insert(attachmentMetadata);
+				}
 
 				List<EmbeddedTag> embeddedTags = embeddedTagMapper.selectByExample(new EmbeddedTagCriteria());
 				for (EmbeddedTag embeddedTag : embeddedTags) {
