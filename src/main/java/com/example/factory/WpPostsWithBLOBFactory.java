@@ -16,8 +16,8 @@ public class WpPostsWithBLOBFactory {
 		post.setPostParent(0L);
 		post.setPostType(WpUpdaterUtils.CONST_POST_TYPE_POST);
 		post.setPostStatus(WpUpdaterUtils.CONST_POST_STATUS_PUBLISH);
-		post.setPostTitle(serviceModel.getPostTitle());
-		post.setPostName(WpUpdaterUtils.urlEncode(StringUtils.substring(serviceModel.getPostTitle(), 0, 22)).toLowerCase());
+		post.setPostTitle(serviceModel.getConvertedPostTitle());
+		post.setPostName(WpUpdaterUtils.urlEncode(StringUtils.substring(serviceModel.getConvertedPostTitle(), 0, 22)).toLowerCase());
 		post.setPostContent(serviceModel.getPostContent());
 		log.debug("", post);
 		return post;

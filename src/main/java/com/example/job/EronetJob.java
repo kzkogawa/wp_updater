@@ -13,6 +13,7 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,32 +21,51 @@ import com.example.service.ICrawlService;
 
 @Configuration
 @EnableBatchProcessing
-public class BatchConfiguration {
+public class EronetJob {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 	@Autowired
+	@Qualifier("EronetService")
 	private ICrawlService crawlService;
 
 	@Bean
-	public Job job1(Step step1) throws Exception {
-		return jobBuilderFactory.get("job1").incrementer(new RunIdIncrementer()).start(step1).build();
+	public Job eronet() throws Exception {
+		return jobBuilderFactory.get("eronet").incrementer(new RunIdIncrementer()).start(eronetStep1()).next(eronetStep2()).next(eronetStep3()).build();
 	}
 
-	@Bean
-	public Step step1() {
-		return stepBuilderFactory.get("step1").tasklet(new Tasklet() {
+	@Bean(name = "eronetStep1")
+	public Step eronetStep1() {
+		return stepBuilderFactory.get("eronetStep1").tasklet(new Tasklet() {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
+				log.info("eronetStep1");
 				crawlService.doCrawl("http://xxeronetxx.info/ranking1day.html");
-				crawlService.doCrawl("http://xxeronetxx.info/jk001.html");
-				crawlService.doCrawl("http://xxeronetxx.info/kn001.html");
-//				crawlService.doCrawl("http://xxeronetxx.info/s4001.html");
-//				crawlService.doCrawl("http://xxeronetxx.info/s7001.html");
 				return null;
 			}
 		}).build();
 	}
 
+	@Bean(name = "eronetStep2")
+	public Step eronetStep2() {
+		return stepBuilderFactory.get("eronetStep2").tasklet(new Tasklet() {
+			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
+				log.info("eronetStep2");
+				crawlService.doCrawl("http://xxeronetxx.info/jk001.html");
+				return null;
+			}
+		}).build();
+	}
+
+	@Bean(name = "eronetStep3")
+	public Step eronetStep3() {
+		return stepBuilderFactory.get("eronetStep3").tasklet(new Tasklet() {
+			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
+				log.info("eronetStep3");
+				crawlService.doCrawl("http://xxeronetxx.info/kn001.html");
+				return null;
+			}
+		}).build();
+	}
 }

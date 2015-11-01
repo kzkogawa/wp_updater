@@ -9,8 +9,10 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -20,6 +22,7 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.cyberneko.html.parsers.DOMParser;
@@ -69,8 +72,18 @@ public class WpUpdaterUtils {
 		return neko;
 	}
 
+	public static List<String> readLines(String string) {
+		List<String> lines = new ArrayList<String>();
+		try (InputStream is = new URL(string).openConnection().getInputStream()) {
+			lines = IOUtils.readLines(is, "UTF-8");
+		} catch (Exception e) {
+			log.error("", e);
+		}
+		return lines;
+	}
+
 	public static String urlEncode(String name) {
-		URLCodec codec = new URLCodec("utf-8");
+		URLCodec codec = new URLCodec("UTF-8");
 		try {
 			return codec.encode(name);
 		} catch (EncoderException e) {

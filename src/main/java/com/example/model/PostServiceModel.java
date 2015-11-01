@@ -156,4 +156,15 @@ public class PostServiceModel {
 		return String.format("%s.%s", getImageFileName(), getImageFileExtension());
 	}
 
+	// うっとーしいので消す
+	static private final String[] REMOVE_WORDS = { "w", "W", "ｗ", "Ｗ" };
+
+	public String getConvertedPostTitle() {
+		String ret = postTitle;
+		for (String word : REMOVE_WORDS) {
+			ret = StringUtils.replace(ret, word, "");
+		}
+		return ret;
+	}
+
 }

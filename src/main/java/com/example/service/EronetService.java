@@ -23,7 +23,7 @@ import org.w3c.dom.html.HTMLMetaElement;
 import com.example.model.PostServiceModel;
 import com.example.util.WpUpdaterUtils;
 
-@Component
+@Component("EronetService")
 public class EronetService implements ICrawlService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -33,9 +33,6 @@ public class EronetService implements ICrawlService {
 	@Transactional
 	@Override
 	public void doCrawl(final String target) {
-		log.debug(target);
-		int counter = 0;
-
 		List<PostServiceModel> serviceModels = new ArrayList<PostServiceModel>();
 		DOMParser neko = WpUpdaterUtils.getDOMParserInstance(target);
 
@@ -79,7 +76,7 @@ public class EronetService implements ICrawlService {
 					}
 				}
 				serviceModels.add(serviceModel);
-				if (counter++ > 3) {
+				if (5 <= serviceModels.size()) {
 					break;
 				}
 			}
