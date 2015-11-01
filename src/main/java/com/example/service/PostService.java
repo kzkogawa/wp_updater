@@ -73,7 +73,11 @@ public class PostService {
 
 				Map<String, Integer> imgInfo = image.getImageInfo();
 				if (imgInfo != null) {
-					String val = String.format(env.getProperty("wp.attachment.metadata"), imgInfo.get("width"), imgInfo.get("height"), attachedFileMeta.getMetaValue());
+					String val = String.format(env.getProperty("wp.attachment.metadata"), 
+							imgInfo.get("width"), 
+							imgInfo.get("height"), 
+							attachedFileMeta.getMetaValue().length(),
+							attachedFileMeta.getMetaValue());
 					WpPostmeta attachmentMetadata = new WpPostmeta();
 					attachmentMetadata.setPostId(image.getId());
 					attachmentMetadata.setMetaKey(WpUpdaterUtils.CONST_POST_META_ATTACH_META);
