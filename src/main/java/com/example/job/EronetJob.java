@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.example.service.crawl.ICrawlService;
 
-//@Configuration
+@Configuration
 @EnableBatchProcessing
 public class EronetJob {
 	private final Logger log = LoggerFactory.getLogger(getClass());
