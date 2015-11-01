@@ -61,7 +61,6 @@ public class WpUpdaterUtils {
 	public static final String CONST_POST_META_JRPC = "_jetpack_related_posts_cache";
 	public static final String CONST_POST_META_ATTACH_FILE = "_wp_attached_file";
 	public static final String CONST_POST_META_ATTACH_META = "_wp_attachment_metadata";
-
 	public static DOMParser getDOMParserInstance(String string) {
 		DOMParser neko = new DOMParser();
 		try (InputStream is = new URL(string).openConnection().getInputStream()) {

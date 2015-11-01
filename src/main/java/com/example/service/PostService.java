@@ -29,8 +29,6 @@ import com.example.util.WpUpdaterUtils;
 public class PostService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
-	private Environment env;
-	@Autowired
 	private WpPostsMapper postsMapper;
 	@Autowired
 	private WpPostmetaMapper postmetaMapper;
@@ -64,26 +62,15 @@ public class PostService {
 				// insert postmetas
 				WpPostmeta editLastMeta = WpPostmetaFactory.getPostEditLastMetas(post.getId(), serviceModel);
 				postmetaMapper.insert(editLastMeta);
-				WpPostmeta editLockMeta = WpPostmetaFactory.getPostEditLockMetas(post.getId(), serviceModel);
+				WpPostmeta editLockMeta = WpPostmetaFactory.getPostEditLockMeta(post.getId(), serviceModel);
 				postmetaMapper.insert(editLockMeta);
-				WpPostmeta thmIdMeta = WpPostmetaFactory.getPostThmIdMetas(post.getId(), image.getId(), serviceModel);
+				WpPostmeta thmIdMeta = WpPostmetaFactory.getPostThmIdMeta(post.getId(), image.getId(), serviceModel);
 				postmetaMapper.insert(thmIdMeta);
-				WpPostmeta attachedFileMeta = WpPostmetaFactory.getImageAttachedFileMetas(image.getId(), serviceModel);
+				WpPostmeta attachedFileMeta = WpPostmetaFactory.getImageAttachedFileMeta(image.getId(), serviceModel);
 				postmetaMapper.insert(attachedFileMeta);
-
-				Map<String, Integer> imgInfo = image.getImageInfo();
-				if (imgInfo != null) {
-					String val = String.format(env.getProperty("wp.attachment.metadata"), 
-							imgInfo.get("width"), 
-							imgInfo.get("height"), 
-							attachedFileMeta.getMetaValue().length(),
-							attachedFileMeta.getMetaValue());
-					WpPostmeta attachmentMetadata = new WpPostmeta();
-					attachmentMetadata.setPostId(image.getId());
-					attachmentMetadata.setMetaKey(WpUpdaterUtils.CONST_POST_META_ATTACH_META);
-					attachmentMetadata.setMetaValue(val);
+				WpPostmeta attachmentMetadata = WpPostmetaFactory.getAttachmentMeta(image, attachedFileMeta.getMetaValue());
+				if (attachmentMetadata != null)
 					postmetaMapper.insert(attachmentMetadata);
-				}
 
 				List<EmbeddedTag> embeddedTags = embeddedTagMapper.selectByExample(new EmbeddedTagCriteria());
 				for (EmbeddedTag embeddedTag : embeddedTags) {
