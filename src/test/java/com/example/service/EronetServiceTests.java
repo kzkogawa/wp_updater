@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.TestBase;
+import com.example.service.crawl.ICrawlService;
 
 public class EronetServiceTests extends TestBase {
 	@Autowired

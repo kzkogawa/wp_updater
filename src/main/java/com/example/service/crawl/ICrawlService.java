@@ -1,4 +1,4 @@
-package com.example.service;
+package com.example.service.crawl;
 
 public interface ICrawlService {
 	void doCrawl(String target);

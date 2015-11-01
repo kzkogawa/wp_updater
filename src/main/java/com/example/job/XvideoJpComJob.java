@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.service.ICrawlService;
+import com.example.service.crawl.ICrawlService;
 
-@Configuration
+//@Configuration
 @EnableBatchProcessing
 public class XvideoJpComJob {
 	private final Logger log = LoggerFactory.getLogger(getClass());

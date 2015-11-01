@@ -1,4 +1,4 @@
-package com.example.service;
+package com.example.service.crawl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +6,12 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.xerces.dom.ElementNSImpl;
-import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.html.HTMLAnchorElement;
@@ -21,6 +21,7 @@ import org.w3c.dom.html.HTMLLIElement;
 import org.w3c.dom.html.HTMLMetaElement;
 
 import com.example.model.PostServiceModel;
+import com.example.service.PostService;
 import com.example.util.WpUpdaterUtils;
 
 @Component("EronetService")
@@ -34,10 +35,10 @@ public class EronetService implements ICrawlService {
 	@Override
 	public void doCrawl(final String target) {
 		List<PostServiceModel> serviceModels = new ArrayList<PostServiceModel>();
-		DOMParser neko = WpUpdaterUtils.getDOMParserInstance(target);
+		Document doc = WpUpdaterUtils.getHtmlDocument(target);
 
 		// parse html
-		NodeList imgs = neko.getDocument().getElementById("leftcolumn").getElementsByTagName("IMG");
+		NodeList imgs = doc.getElementById("leftcolumn").getElementsByTagName("IMG");
 		for (int i = 0, n = imgs.getLength(); i < n; i++) {
 			HTMLImageElement gif = (HTMLImageElement) imgs.item(i);
 			if (gif.getParentNode().getNodeName().equals("TD")) {
@@ -85,25 +86,25 @@ public class EronetService implements ICrawlService {
 	}
 
 	private String getPostSourceUrl(String orgUrl) {
-		DOMParser neko = WpUpdaterUtils.getDOMParserInstance(orgUrl);
+		Document doc = WpUpdaterUtils.getHtmlDocument(orgUrl);
 		if (StringUtils.contains(orgUrl, "/xvideo-jp.com/")) {
-			NodeList items = neko.getDocument().getElementById("post-" + StringUtils.substringAfterLast(orgUrl, "/")).getElementsByTagName("IMG");
+			NodeList items = doc.getElementById("post-" + StringUtils.substringAfterLast(orgUrl, "/")).getElementsByTagName("IMG");
 			return items.item(0).getAttributes().getNamedItem("src").getNodeValue();
 		} else if (StringUtils.contains(orgUrl, "www.youskbe.com")) {
-			NodeList items = ((HTMLElement) neko.getDocument().getElementsByTagName("ARTICLE").item(0)).getElementsByTagName("IMG");
+			NodeList items = ((HTMLElement) doc.getElementsByTagName("ARTICLE").item(0)).getElementsByTagName("IMG");
 			return items.item(0).getAttributes().getNamedItem("src").getNodeValue();
 		} else if (StringUtils.contains(orgUrl, "blog.livedoor.jp/dogazo")) {
-			NodeList items = neko.getDocument().getElementsByTagName("DIV");
+			NodeList items = doc.getElementsByTagName("DIV");
 			for (int i = 0, n = items.getLength(); i < n; i++) {
 				ElementNSImpl div = (ElementNSImpl) items.item(i);
 				if (StringUtils.equals(div.getAttribute("class"), "article-body-inner")) {
 					return div.getFirstElementChild().getAttribute("src");
 				}
 			}
-			NodeList imgs = ((HTMLElement) neko.getDocument().getElementsByTagName("DIV").item(0)).getElementsByTagName("IMG");
+			NodeList imgs = ((HTMLElement) doc.getElementsByTagName("DIV").item(0)).getElementsByTagName("IMG");
 			return imgs.item(0).getAttributes().getNamedItem("src").getNodeValue();
 		} else if (StringUtils.contains(orgUrl, "omatube00.blog19.fc2.com")) {
-			NodeList items = neko.getDocument().getElementsByTagName("IMG");
+			NodeList items = doc.getElementsByTagName("IMG");
 			for (int i = 0, n = items.getLength(); i < n; i++) {
 				ElementNSImpl item = (ElementNSImpl) items.item(i);
 				if (StringUtils.equals(((ElementNSImpl) item.getParentNode()).getAttribute("href"), orgUrl)) {
@@ -111,7 +112,7 @@ public class EronetService implements ICrawlService {
 				}
 			}
 		} else if (StringUtils.contains(orgUrl, "erotube.org")) {
-			NodeList items = neko.getDocument().getElementsByTagName("IMG");
+			NodeList items = doc.getElementsByTagName("IMG");
 			for (int i = 0, n = items.getLength(); i < n; i++) {
 				ElementNSImpl item = (ElementNSImpl) items.item(i);
 				if (StringUtils.equals(item.getAttribute("alt"), "GO!!")) {
@@ -119,10 +120,10 @@ public class EronetService implements ICrawlService {
 				}
 			}
 		} else if (StringUtils.contains(orgUrl, "1129rape.blog.fc2.com")) {
-			ElementNSImpl item = (ElementNSImpl) neko.getDocument().getElementById("iimmgg");
+			ElementNSImpl item = (ElementNSImpl) doc.getElementById("iimmgg");
 			return ((ElementNSImpl) item.getFirstChild().getFirstChild()).getAttribute("src");
 		} else if (StringUtils.contains(orgUrl, "xvideos-field5.com")) {
-			NodeList items = neko.getDocument().getElementsByTagName("LI");
+			NodeList items = doc.getElementsByTagName("LI");
 			for (int i = 0, n = items.getLength(); i < n; i++) {
 				HTMLLIElement item = (HTMLLIElement) items.item(i);
 				if (StringUtils.equals(item.getAttribute("class"), "main_kiji")) {
@@ -130,7 +131,7 @@ public class EronetService implements ICrawlService {
 				}
 			}
 		} else if (StringUtils.contains(orgUrl, "rakuero-douga.com")) {
-			NodeList items = neko.getDocument().getElementsByTagName("META");
+			NodeList items = doc.getElementsByTagName("META");
 			for (int i = 0, n = items.getLength(); i < n; i++) {
 				HTMLMetaElement item = (HTMLMetaElement) items.item(i);
 				if (StringUtils.equals(item.getAttribute("property"), "og:image")) {
@@ -138,7 +139,7 @@ public class EronetService implements ICrawlService {
 				}
 			}
 		} else if (StringUtils.contains(orgUrl, "xvideos-sm.com")) {
-			NodeList items = neko.getDocument().getElementsByTagName("META");
+			NodeList items = doc.getElementsByTagName("META");
 			for (int i = 0, n = items.getLength(); i < n; i++) {
 				ElementNSImpl item = (ElementNSImpl) items.item(i);
 				if (StringUtils.equals(item.getAttribute("property"), "og:image")) {

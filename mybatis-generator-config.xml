@@ -33,5 +33,6 @@
 			<generatedKey column="term_id" sqlStatement="MySql" identity="true"/>
 		</table>
 		<table tableName="embedded_tag" />
+		<table tableName="embedded_category" />
 	</context>
 </generatorConfiguration>

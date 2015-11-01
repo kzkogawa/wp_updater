@@ -1,4 +1,4 @@
-package com.example.service;
+package com.example.service.crawl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.model.PostServiceModel;
+import com.example.service.PostService;
 import com.example.util.WpUpdaterUtils;
 
 @Component("XvideoJpComService")

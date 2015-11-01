@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
@@ -28,6 +30,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 import freemarker.template.Configuration;
@@ -61,14 +64,26 @@ public class WpUpdaterUtils {
 	public static final String CONST_POST_META_JRPC = "_jetpack_related_posts_cache";
 	public static final String CONST_POST_META_ATTACH_FILE = "_wp_attached_file";
 	public static final String CONST_POST_META_ATTACH_META = "_wp_attachment_metadata";
-	public static DOMParser getDOMParserInstance(String string) {
+
+	public static Document getHtmlDocument(String string) {
 		DOMParser neko = new DOMParser();
 		try (InputStream is = new URL(string).openConnection().getInputStream()) {
 			neko.parse(new InputSource(is));
 		} catch (Exception e) {
 			log.error("", e);
 		}
-		return neko;
+		return neko.getDocument();
+	}
+
+	public static Document getXmlDocument(String string) {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		try (InputStream is = new URL(string).openConnection().getInputStream()) {
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			return builder.parse(new InputSource(is));
+		} catch (Exception e) {
+			log.error("", e);
+		}
+		return null;
 	}
 
 	public static List<String> readLines(String string) {

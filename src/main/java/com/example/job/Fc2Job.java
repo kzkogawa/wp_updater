@@ -19,53 +19,32 @@ import org.springframework.context.annotation.Configuration;
 
 import com.example.service.crawl.ICrawlService;
 
-//@Configuration
+@Configuration
 @EnableBatchProcessing
-public class EronetJob {
+public class Fc2Job {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 	@Autowired
-	@Qualifier("EronetService")
+	@Qualifier("Fc2Service")
 	private ICrawlService crawlService;
 
 	@Bean
-	public Job eronet() throws Exception {
-		return jobBuilderFactory.get("eronet").incrementer(new RunIdIncrementer()).start(eronetStep1()).next(eronetStep2()).next(eronetStep3()).build();
+	public Job fc2() throws Exception {
+		return jobBuilderFactory.get("fc2").incrementer(new RunIdIncrementer()).start(fc2Step1()).build();
 	}
 
-	@Bean(name = "eronetStep1")
-	public Step eronetStep1() {
-		return stepBuilderFactory.get("eronetStep1").tasklet(new Tasklet() {
+	@Bean
+	public Step fc2Step1() {
+		return stepBuilderFactory.get("fc2Step1").tasklet(new Tasklet() {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-				log.info("eronetStep1");
-				crawlService.doCrawl("http://xxeronetxx.info/ranking1day.html");
+				log.info("fc2Step1");
+				crawlService.doCrawl("http://video.fc2.com/a/feed_ranking.php?m=week");
 				return null;
 			}
 		}).build();
 	}
 
-	@Bean(name = "eronetStep2")
-	public Step eronetStep2() {
-		return stepBuilderFactory.get("eronetStep2").tasklet(new Tasklet() {
-			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-				log.info("eronetStep2");
-				crawlService.doCrawl("http://xxeronetxx.info/jk001.html");
-				return null;
-			}
-		}).build();
-	}
-
-	@Bean(name = "eronetStep3")
-	public Step eronetStep3() {
-		return stepBuilderFactory.get("eronetStep3").tasklet(new Tasklet() {
-			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-				log.info("eronetStep3");
-				crawlService.doCrawl("http://xxeronetxx.info/kn001.html");
-				return null;
-			}
-		}).build();
-	}
 }
