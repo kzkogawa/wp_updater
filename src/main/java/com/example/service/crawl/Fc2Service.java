@@ -32,7 +32,7 @@ public class Fc2Service implements ICrawlService {
 		// parse xml
 		NodeList items = doc.getElementsByTagName("item");
 		for (int i = 0, n = items.getLength(); i < n; i++) {
-			PostServiceModel serviceModel = new PostServiceModel("eronet.ftl");
+			PostServiceModel serviceModel = new PostServiceModel("fc2.ftl");
 			serviceModel.setOrgPageUrl(target);
 			serviceModel.addTag("FC2");
 

@@ -30,7 +30,7 @@ public class XvideoJpComService implements ICrawlService {
 		for (int i = 1, n = lines.size(); i < n; i += SKIP_SIZE) {
 			String dmm = parseLineSafe(lines, n, i, 8);
 			if (!StringUtils.isEmpty(dmm)) {
-				PostServiceModel serviceModel = new PostServiceModel("eronet.ftl");
+				PostServiceModel serviceModel = new PostServiceModel("xvideojpcon.ftl");
 				serviceModel.addCategorys("エロ動画");
 				serviceModel.setOrgPageUrl(target);
 				serviceModel.setPostSourceUrl(parseLineSafe(lines, n, i, 1));
