@@ -31,4 +31,9 @@ public class WpUpdaterUtilsTests {
 		FileUtils.copyFile(Paths.get("src/test/java/com/example/1445318654713.jpg").toFile(), f);
 		WpUpdaterUtils.resizeImage(f);
 	}
+
+	@Test
+	public void getHtmlDocument() {
+		WpUpdaterUtils.getHtmlDocument("http://localhost");
+	}
 }

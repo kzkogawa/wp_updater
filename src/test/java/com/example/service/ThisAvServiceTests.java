@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import com.example.TestBase;
 import com.example.service.crawl.ICrawlService;
 
-public class EronetServiceTests extends TestBase {
+public class ThisAvServiceTests extends TestBase {
 	@Autowired
-	@Qualifier("EronetService")
+	@Qualifier("ThisAvService")
 	private ICrawlService crawlService;
 
 	@Test
 	public void crawl_test() {
-		crawlService.doCrawl("http://xxeronetxx.info/ranking1day.html");
+		crawlService.doCrawl("http://www.thisav.com/videos?c=28");
 	}
 
 }

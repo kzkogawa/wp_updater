@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -67,7 +69,7 @@ public class WpUpdaterUtils {
 
 	public static Document getHtmlDocument(String string) {
 		DOMParser neko = new DOMParser();
-		try (InputStream is = new URL(string).openConnection().getInputStream()) {
+		try (InputStream is = getConnection(string).getInputStream()) {
 			neko.parse(new InputSource(is));
 		} catch (Exception e) {
 			log.error("", e);
@@ -77,7 +79,7 @@ public class WpUpdaterUtils {
 
 	public static Document getXmlDocument(String string) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		try (InputStream is = new URL(string).openConnection().getInputStream()) {
+		try (InputStream is = getConnection(string).getInputStream()) {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			return builder.parse(new InputSource(is));
 		} catch (Exception e) {
@@ -88,12 +90,18 @@ public class WpUpdaterUtils {
 
 	public static List<String> readLines(String string) {
 		List<String> lines = new ArrayList<String>();
-		try (InputStream is = new URL(string).openConnection().getInputStream()) {
+		try (InputStream is = getConnection(string).getInputStream()) {
 			lines = IOUtils.readLines(is, "UTF-8");
 		} catch (Exception e) {
 			log.error("", e);
 		}
 		return lines;
+	}
+
+	private static URLConnection getConnection(String string) throws MalformedURLException, IOException {
+		URLConnection urlConnection = new URL(string).openConnection();
+		urlConnection.setRequestProperty("User-Agent", "curl/7.45.0");
+		return urlConnection;
 	}
 
 	public static String urlEncode(String name) {
@@ -173,7 +181,7 @@ public class WpUpdaterUtils {
 
 	public static Map<String, Integer> saveImage(String postImageUrl, String imageFileNameWithExtension) {
 		try {
-			FileUtils.copyURLToFile(new URL(postImageUrl), getUploadFile(imageFileNameWithExtension));
+			FileUtils.copyInputStreamToFile(getConnection(postImageUrl).getInputStream(), getUploadFile(imageFileNameWithExtension));
 			return resizeImage(getUploadFile(imageFileNameWithExtension));
 		} catch (Exception e) {
 			log.error("", e);

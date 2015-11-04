@@ -2,10 +2,13 @@ package com.example.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.example.util.WpUpdaterUtils;
 
@@ -20,6 +23,7 @@ public class PostServiceModel {
 	private String template;
 	private String imageFileName;
 	private String postContent;
+	private Map<String, Object> map = new HashMap<String, Object>();
 
 	public PostServiceModel(String template) {
 		this.template = template;
@@ -167,4 +171,24 @@ public class PostServiceModel {
 		return ret;
 	}
 
+	/**
+	 * @return the map
+	 */
+	public Map<String, Object> getMap() {
+		// hmm....immutable, I don't care!
+		return map;
+	}
+
+	/**
+	 * @param map
+	 *            the map to set
+	 */
+	public void addMap(String key, Object value) {
+		this.map.put(key, value);
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 }
