@@ -42,9 +42,9 @@ public class EronetJob {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 				log.info("eronetStep1");
 				crawlService.doCrawl("http://xxeronetxx.info/ranking1day.html");
-				return null;
+				return RepeatStatus.FINISHED;
 			}
-		}).build();
+		}).allowStartIfComplete(true).build();
 	}
 
 	@Bean(name = "eronetStep2")
@@ -53,9 +53,9 @@ public class EronetJob {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 				log.info("eronetStep2");
 				crawlService.doCrawl("http://xxeronetxx.info/jk001.html");
-				return null;
+				return RepeatStatus.FINISHED;
 			}
-		}).build();
+		}).allowStartIfComplete(true).build();
 	}
 
 	@Bean(name = "eronetStep3")
@@ -64,8 +64,8 @@ public class EronetJob {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 				log.info("eronetStep3");
 				crawlService.doCrawl("http://xxeronetxx.info/kn001.html");
-				return null;
+				return RepeatStatus.FINISHED;
 			}
-		}).build();
+		}).allowStartIfComplete(true).build();
 	}
 }

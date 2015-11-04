@@ -42,9 +42,9 @@ public class Fc2Job {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 				log.info("fc2Step1");
 				crawlService.doCrawl("http://video.fc2.com/a/feed_ranking.php?m=week");
-				return null;
+				return RepeatStatus.FINISHED;
 			}
-		}).build();
+		}).allowStartIfComplete(true).build();
 	}
 
 }

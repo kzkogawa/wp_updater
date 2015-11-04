@@ -34,6 +34,7 @@ public class ThisAvService implements ICrawlService {
 			ElementNSImpl div = (ElementNSImpl) divs.item(i);
 			if (div.hasAttribute("class") && StringUtils.endsWithIgnoreCase(div.getAttribute("class"), "video_box")) {
 				PostServiceModel serviceModel = new PostServiceModel("thisav.ftl");
+				serviceModel.addTag("ThisAv");
 				ElementNSImpl anc = (ElementNSImpl) div.getFirstElementChild();
 				String sourceUrl = anc.getAttribute("href");
 				serviceModel.setPostSourceUrl(sourceUrl);

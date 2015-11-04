@@ -42,9 +42,9 @@ public class ThisAvJob {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 				log.info("thisAvStep1");
 				crawlService.doCrawl("http://www.thisav.com/videos?c=28");
-				return null;
+				return RepeatStatus.FINISHED;
 			}
-		}).build();
+		}).allowStartIfComplete(true).build();
 	}
 
 }

@@ -42,9 +42,9 @@ public class XvideoJpComJob {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 				log.info("xvideoJpComStep1");
 				crawlService.doCrawl("http://xvideos-field.com/rr_xvjp_js/get_site_ranking.js");
-				return null;
+				return RepeatStatus.FINISHED;
 			}
-		}).build();
+		}).allowStartIfComplete(true).build();
 	}
 
 }

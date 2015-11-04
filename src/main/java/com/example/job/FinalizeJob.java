@@ -40,9 +40,9 @@ public class FinalizeJob {
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 				log.info("finishStep1");
 				termService.updateUsageCount();
-				return null;
+				return RepeatStatus.FINISHED;
 			}
-		}).build();
+		}).allowStartIfComplete(true).build();
 	}
 
 }
