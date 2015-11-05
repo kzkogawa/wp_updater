@@ -30,9 +30,11 @@ public class ThisAvService implements ICrawlService {
 		List<PostServiceModel> serviceModels = new ArrayList<PostServiceModel>();
 		Document doc = WpUpdaterUtils.getHtmlDocument(target);
 		NodeList divs = doc.getElementsByTagName("DIV");
+		log.debug("{} divs found", divs.getLength());
 		for (int i = 0, n = divs.getLength(); i < n; i++) {
 			ElementNSImpl div = (ElementNSImpl) divs.item(i);
 			if (div.hasAttribute("class") && StringUtils.endsWithIgnoreCase(div.getAttribute("class"), "video_box")) {
+				log.debug("target div found {}", div);
 				PostServiceModel serviceModel = new PostServiceModel("thisav.ftl");
 				serviceModel.addTag("ThisAv");
 				ElementNSImpl anc = (ElementNSImpl) div.getFirstElementChild();
@@ -45,11 +47,12 @@ public class ThisAvService implements ICrawlService {
 				// find flush source
 				Document subDoc = WpUpdaterUtils.getHtmlDocument(sourceUrl);
 				NodeList scripts = subDoc.getElementsByTagName("SCRIPT");
+				log.debug("{} scripts found", scripts.getLength());
 				for (int j = 0, o = scripts.getLength(); j < o; j++) {
 					ElementNSImpl script = (ElementNSImpl) scripts.item(j);
 					String content = script.getTextContent();
 					if (script.hasAttribute("type") && !script.hasAttribute("src") && StringUtils.contains(content, "SWFObject")) {
-						log.debug(content);
+						log.debug("flash content information - {}", content);
 						serviceModel.addMap("flvUrl", StringUtils.substringBetween(content, "file','", "'"));
 						break;
 					}

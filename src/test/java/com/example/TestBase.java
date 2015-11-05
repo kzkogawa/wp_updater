@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WpUpdaterApplication.class)
-@Transactional
+//@Transactional
 public class TestBase {
 
 	@Before
