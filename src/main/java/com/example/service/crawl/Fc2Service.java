@@ -48,6 +48,7 @@ public class Fc2Service implements ICrawlService {
 					serviceModel.setPostImageUrl(child.getFirstChild().getNodeValue());
 				}
 			}
+			log.debug(serviceModel.toString());
 			serviceModels.add(serviceModel);
 		}
 		postService.InsertPosts(serviceModels);

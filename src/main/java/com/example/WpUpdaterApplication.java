@@ -43,10 +43,19 @@ public class WpUpdaterApplication {
 			log.error("xvideoJpCom", e);
 		}
 		try {
+			JobExecution shareMovie = jobLauncher.run(applicationContext.getBean("shareMovie", Job.class), new JobParameters());
+			log.debug(ToStringBuilder.reflectionToString(shareMovie));
+		} catch (Exception e) {
+			log.error("shareMovie", e);
+		}
+		
+		
+		try {
 			JobExecution finish = jobLauncher.run(applicationContext.getBean("finish", Job.class), new JobParameters());
 			log.debug(ToStringBuilder.reflectionToString(finish));
 		} catch (Exception e) {
 			log.error("xvideoJpCom", e);
 		}
+
 	}
 }

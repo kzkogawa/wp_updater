@@ -76,6 +76,7 @@ public class EronetService implements ICrawlService {
 						}
 					}
 				}
+				log.debug(serviceModel.toString());
 				serviceModels.add(serviceModel);
 				if (5 <= serviceModels.size()) {
 					break;
